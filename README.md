@@ -1,12 +1,4 @@
-# Конспект по графовым алгоритмам (Typst)
+# Алгоритмы и структуры данных
 
-> В репозитории хранятся только исходники. PDF собирается локально командой ниже.
-
-## Что внутри
-- 20 тем по графам: обходы, кратчайшие пути, MST, циклы, потоки, паросочетания, мосты, раскраска.
-- Для каждого алгоритма: описание, визуализация, C++-подобный псевдокод, асимптотика.
-
-## Сборка
-```bash
-typst compile notes.typ graph_algorithms_cheatsheet.pdf
-```
+## PDF
+[![PDF](https://img.shields.io/badge/PDF-Open%20cheatsheet-2563eb?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](./pdf/cheatsheet2.pdf)
