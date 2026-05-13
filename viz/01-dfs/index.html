@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DFS — Обход в глубину</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+<header>
+  <h1>DFS — <span>Обход в глубину</span></h1>
+  <div class="complexity">
+    <span class="badge">Время: <b>O(V + E)</b></span>
+    <span class="badge">Память: <b>O(V)</b></span>
+  </div>
+</header>
+
+<main>
+  <!-- ── Graph panel ── -->
+  <div id="graph-panel">
+    <div id="graph-controls">
+      <button class="btn primary" id="btn-run">▶ Запустить DFS</button>
+      <div class="sep"></div>
+      <button class="btn" id="btn-play"  title="Воспроизвести (Space)">⏵ Play</button>
+      <button class="btn" id="btn-pause" title="Пауза (Space)" disabled>⏸ Пауза</button>
+      <button class="btn" id="btn-step"  title="Шаг вперёд (→)">→ Шаг</button>
+      <button class="btn" id="btn-back"  title="Шаг назад (←)">← Назад</button>
+      <button class="btn" id="btn-reset" title="Сброс (R)">↺ Сброс</button>
+      <div class="sep"></div>
+      <span id="speed-label">Скорость</span>
+      <input type="range" id="speed" min="100" max="1000" value="400">
+      <div class="sep"></div>
+      <button class="btn" id="btn-load">Пример</button>
+      <div class="graph-mode-toggle">
+        <button class="mode-btn active" id="btn-directed">Ориентированный</button>
+        <button class="mode-btn" id="btn-undirected">Неориент.</button>
+      </div>
+    </div>
+
+    <div id="svg-container">
+      <svg id="graph-svg"></svg>
+      <div class="hint">Клик на холст — добавить вершину &nbsp;·&nbsp; Клик на вершину — начать ребро (второй клик — конец) &nbsp;·&nbsp; ПКМ — удалить &nbsp;·&nbsp; Перетащить — переместить</div>
+    </div>
+  </div>
+
+  <!-- ── Right panel ── -->
+  <div id="right-panel">
+
+    <!-- Pseudocode -->
+    <div id="pseudocode">
+      <h3>Псевдокод</h3>
+      <!-- lines injected by JS -->
+    </div>
+
+    <!-- State -->
+    <div id="state-panel">
+      <div class="panel-section" style="border:none;padding:0;margin-bottom:10px;">
+        <h3>Состояние алгоритма</h3>
+        <div class="state-row">
+          <span class="state-label">Стек (GRAY)</span>
+          <div class="chips" id="chip-stack"></div>
+        </div>
+        <div class="state-row">
+          <span class="state-label">Готово (BLACK)</span>
+          <div class="chips" id="chip-visited"></div>
+        </div>
+        <div class="state-row">
+          <span class="state-label">Не посещ.</span>
+          <div class="chips" id="chip-unvisited"></div>
+        </div>
+      </div>
+
+      <!-- Times table -->
+      <div>
+        <h3 style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px;">Времена входа / выхода</h3>
+        <table id="times-table">
+          <thead>
+            <tr>
+              <th>Вершина</th>
+              <th>tin</th>
+              <th>tout</th>
+              <th>Цвет</th>
+            </tr>
+          </thead>
+          <tbody id="times-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Step description -->
+    <div id="step-desc">Нажмите <b>Запустить DFS</b>, затем управляйте стрелками или кнопками.</div>
+
+    <!-- Legend -->
+    <div id="legend">
+      <h3>Легенда рёбер</h3>
+      <div class="legend-grid">
+        <div class="legend-item">
+          <div class="legend-line" style="background:var(--tree-edge)"></div>
+          Tree edge
+        </div>
+        <div class="legend-item">
+          <div class="legend-line dashed" style="color:var(--back-edge);background:none;height:0;border-top:2px dashed currentColor"></div>
+          Back edge (цикл)
+        </div>
+        <div class="legend-item">
+          <div class="legend-line dashed" style="color:var(--forward-edge);background:none;height:0;border-top:2px dashed currentColor"></div>
+          Forward edge
+        </div>
+        <div class="legend-item">
+          <div class="legend-line dashed" style="color:var(--cross-edge);background:none;height:0;border-top:2px dashed currentColor"></div>
+          Cross edge
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--white-node)"></div>
+          WHITE (не посещён)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--gray-node)"></div>
+          GRAY (в стеке)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--black-node)"></div>
+          BLACK (завершён)
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="dfs.js"></script>
+</body>
+</html>
