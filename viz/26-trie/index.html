@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>26 — Бор (Trie)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>26 — <span>Бор (Trie)</span></h1>
+  <div class="complexity">
+    <span class="badge">Время вставки: <b>O(|word|)</b></span>
+    <span class="badge">Память: <b>O(n·|Σ|)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="str-canvas">
+      <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label style="font-size:12px;color:var(--muted)">Слово:</label>
+        <input id="input-word" placeholder="введите слово" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:4px 8px;font-family:monospace;font-size:13px;width:150px">
+        <button class="btn" id="btn-add-word">Добавить</button>
+      </div>
+      <svg id="trie-svg" style="width:100%;height:360px"></svg>
+    </div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Состояние</h3>
+      <div class="state-row"><span class="state-key">Слова</span><div class="chips" id="chips-words"></div></div>
+      <div class="state-row"><span class="state-key">Текущее</span><div class="chips" id="chips-cur"></div></div>
+    </div>
+    <div id="step-desc">Введите слово и нажмите «Добавить», затем <b>Запустить</b> для анимации вставки.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-white)"></span> Обычный узел</div>
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-black)"></span> Конец слова</div>
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-gray)"></span> Вставляемый</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>22 — Префикс-функция</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>22 — <span>Префикс-функция (π-функция)</span></h1>
+  <div class="complexity">
+    <span class="badge">Время: <b>O(n)</b></span>
+    <span class="badge">Память: <b>O(n)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="str-canvas"></div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>π-массив</h3>
+      <div id="pi-row" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px"></div>
+      <div class="state-row"><span class="state-key">i</span><div class="chips"><span class="chip c-accent" id="cur-i">—</span></div></div>
+      <div class="state-row"><span class="state-key">j</span><div class="chips"><span class="chip c-gray" id="cur-j">—</span></div></div>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span style="background:rgba(99,102,241,.2);border:1px solid var(--accent2);border-radius:4px;padding:1px 5px;font-size:10px">активный</span> Позиция i</div>
+        <div class="legend-item"><span style="background:rgba(245,158,11,.2);border:1px solid var(--col-gray);border-radius:4px;padding:1px 5px;font-size:10px">сравн.</span> Позиция j</div>
+        <div class="legend-item"><span style="background:rgba(16,185,129,.2);border:1px solid var(--col-black);border-radius:4px;padding:1px 5px;font-size:10px">совп.</span> Готово</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

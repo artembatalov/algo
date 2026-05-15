@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>09 — Алгоритм Краскала (MST)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>09 — <span>Краскал: Минимальное остовное дерево</span></h1>
+  <div class="complexity">
+    <span class="badge">Время: <b>O(E log E)</b></span>
+    <span class="badge">Память: <b>O(V)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="canvas-wrap">
+      <svg id="viz-svg"></svg>
+      <div class="canvas-hint">Клик — вершина · Клик→клик — ребро (вес задаётся при добавлении) · ПКМ — удалить</div>
+    </div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Состояние</h3>
+      <div class="state-row"><span class="state-key">Вес MST</span><div class="chips"><span class="chip c-black" id="mst-weight">0</span></div></div>
+      <h3 style="margin-top:8px">Рёбра (отсорт.)</h3>
+      <table class="viz-table">
+        <thead><tr><th>Ребро</th><th>Вес</th><th>Статус</th></tr></thead>
+        <tbody id="edges-tbody"></tbody>
+      </table>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="leg-line" style="background:var(--col-black)"></span> MST ребро</div>
+        <div class="legend-item"><span class="leg-dash" style="color:#ef4444"></span> Отклонено (цикл)</div>
+        <div class="legend-item"><span class="leg-line" style="background:var(--edge-active)"></span> Текущее</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

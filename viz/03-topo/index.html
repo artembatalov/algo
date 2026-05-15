@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>01 — DFS: Обход в глубину</title>
+  <title>03 — Топологическая сортировка</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/base.css">
@@ -10,7 +10,7 @@
 <body>
 <header>
   <a href="../" class="back-link">← Все алгоритмы</a>
-  <h1>01 — <span>DFS: Обход в глубину</span></h1>
+  <h1>03 — <span>Топологическая сортировка</span></h1>
   <div class="complexity">
     <span class="badge">Время: <b>O(V + E)</b></span>
     <span class="badge">Память: <b>O(V)</b></span>
@@ -28,26 +28,18 @@
     <div id="pseudo"><h3>Псевдокод</h3></div>
     <div id="state-panel">
       <h3>Состояние</h3>
-      <div class="state-row"><span class="state-key">GRAY (стек)</span><div class="chips" id="chips-gray"></div></div>
-      <div class="state-row"><span class="state-key">BLACK (готово)</span><div class="chips" id="chips-black"></div></div>
-      <div class="state-row"><span class="state-key">WHITE</span><div class="chips" id="chips-white"></div></div>
-      <h3 style="margin-top:10px">Времена</h3>
-      <table class="viz-table" id="times-table">
-        <thead><tr><th>Верш.</th><th>tin</th><th>tout</th><th>Цвет</th></tr></thead>
-        <tbody id="times-tbody"></tbody>
-      </table>
+      <div class="state-row"><span class="state-key">GRAY</span><div class="chips" id="chips-gray"></div></div>
+      <div class="state-row"><span class="state-key">BLACK</span><div class="chips" id="chips-black"></div></div>
+      <h3 style="margin-top:10px">Топо-порядок</h3>
+      <div class="chips" id="chips-topo"></div>
     </div>
     <div id="step-desc">Нажмите <b>Запустить</b>, затем управляйте стрелками или кнопками.</div>
     <div id="legend">
       <h3>Легенда</h3>
       <div class="legend-grid">
-        <div class="legend-item"><span class="leg-line" style="background:var(--edge-tree)"></span> Tree edge</div>
-        <div class="legend-item"><span class="leg-dash" style="color:var(--edge-back)"></span> Back edge</div>
-        <div class="legend-item"><span class="leg-dash" style="color:var(--edge-forward)"></span> Forward edge</div>
-        <div class="legend-item"><span class="leg-dash" style="color:var(--edge-cross)"></span> Cross edge</div>
         <div class="legend-item"><span class="leg-dot" style="background:var(--col-white)"></span> WHITE</div>
         <div class="legend-item"><span class="leg-dot" style="background:var(--col-gray)"></span> GRAY</div>
-        <div class="legend-item"><span class="leg-dot" style="background:var(--col-black)"></span> BLACK</div>
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-black)"></span> BLACK (выдан)</div>
       </div>
     </div>
   </div>
