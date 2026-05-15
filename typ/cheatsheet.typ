@@ -108,59 +108,92 @@ void dag() {
 ```
 ], [Время: $O(V+E)$.])
 
-= Конденсация графа. Поиск компоненты слабой связности [To do]
-Сильные компоненты связности объединяют вершины, достижимые друг из друга, а после сжатия каждой такой компоненты получается DAG конденсации. Для слабой связности в орграфе достаточно забыть направления рёбер и запустить обычный обход по неориентированной версии графа.
+= Конденсация графа. Поиск компоненты слабой связности
+Сильные компоненты связности (SCC) объединяют вершины, достижимые друг из друга. Алгоритм Косарайю: первый DFS строит порядок выхода, второй DFS на транспонированном графе в обратном порядке выхода выделяет компоненты. Слабые компоненты — SCC на неориентированной версии графа.
 #code-with-asymptotics([
 ```cpp
-// Kosaraju
-run_dfs_on_g(); order by exit time;
-run_dfs_on_gr(reverse order) => comp[v];
-// weak components: traverse edges as undirected
+// 1. DFS на G: записать вершины в порядке выхода
+void dfs1(int v){
+  used[v]=1;
+  for(int to: g[v]) if(!used[to]) dfs1(to);
+  order.push_back(v);
+}
+// 2. DFS на G^T в обратном порядке
+void dfs2(int v, int c){
+  comp[v]=c;
+  for(int to: rg[v]) if(comp[to]==-1) dfs2(to,c);
+}
+for(int v=0;v<n;v++) if(!used[v]) dfs1(v);
+fill(comp.begin(),comp.end(),-1);
+for(int i=n-1;i>=0;i--)
+  if(comp[order[i]]==-1) dfs2(order[i], cnt++);
 ```
 ], [Время: $O(V+E)$.])
 
-= Поиск и восстановление циклов [To do]
-Циклы в орграфе обычно ищут через цвета вершин в DFS: ребро в серую вершину означает обратный заход и наличие цикла. После обнаружения цикл восстанавливают по массиву предков, а в неориентированном графе отдельно учитывают, что ребро к родителю не считается циклом.
+= Поиск и восстановление циклов
+Циклы в орграфе ищут через цвета вершин в DFS. Ребро в серую вершину (color==1) — обратное, цикл найден. Восстанавливают цикл по массиву предков `p[]`, проходя от `cyc_end` до `cyc_start`. В неориентированном графе ребро к непосредственному родителю не считается циклом.
 #code-with-asymptotics([
 ```cpp
 bool dfs(int v){
   color[v]=1;
   for(int to: g[v]){
-    if(color[to]==0){ p[to]=v; if(dfs(to)) return true; }
-    else if(color[to]==1){ cyc_start=to; cyc_end=v; return true; }
+    if(!color[to]){ p[to]=v; if(dfs(to)) return true; }
+    else if(color[to]==1){ cyc_end=v; cyc_start=to; return true; }
   }
   color[v]=2; return false;
 }
+// Восстановление цикла:
+vector<int> cycle;
+for(int v=cyc_end; v!=cyc_start; v=p[v])
+  cycle.push_back(v);
+cycle.push_back(cyc_start);
+reverse(cycle.begin(), cycle.end());
 ```
 ], [Время: $O(V+E)$.])
 
-= Гамильтонов цикл при достаточных условиях [To do]
-Задача о гамильтоновом цикле в общем случае сложная, поэтому на практике часто проверяют достаточные условия существования цикла. Теоремы Дирака и Оре позволяют быстро установить, что цикл точно существует, если степени вершин достаточно велики относительно числа вершин графа.
+= Гамильтонов цикл при достаточных условиях
+*Теорема Дирака:* если $n >= 3$ и $deg(v) >= n/2$ для всех $v$ — гамильтонов цикл существует. *Теорема Оре:* если для каждой пары несмежных вершин $u, v$ выполнено $deg(u)+deg(v) >= n$ — тоже существует. Оба условия достаточные, но не необходимые.
 #code-with-asymptotics([
 ```cpp
-bool dirac=true;
-for(v) if(deg[v] < n/2) dirac=false;
-if(dirac) cout << "Hamiltonian cycle exists";
-```
-], [Время проверки условий: $O(n^2)$.])
+// Проверка условия Дирака
+bool dirac = true;
+for(int v=0;v<n;v++)
+  if(deg[v] < n/2){ dirac=false; break; }
 
-= Эйлеров цикл [To do]
-Эйлеров цикл проходит по каждому ребру ровно один раз и возвращается в стартовую вершину. В неориентированном графе для его существования нужны чётные степени всех вершин ненулевой степени и связность по этим вершинам, а само построение обычно делают алгоритмом Хиерхольцера.
+// Проверка условия Оре
+bool ore = true;
+for(int u=0;u<n;u++)
+  for(int v=u+1;v<n;v++)
+    if(!adj[u][v] && deg[u]+deg[v]<n)
+      { ore=false; break; }
+
+if(dirac || ore)
+  cout << "Hamiltonian cycle exists\n";
+```
+], [Время проверки: $O(n^2)$.])
+
+= Эйлеров цикл
+Эйлеров цикл проходит по каждому ребру ровно один раз. Условия в неориентированном графе: все степени чётны + граф связен. В ориентированном: $in(v) = out(v)$ для всех $v$ + граф связен. Алгоритм Хиерхольцера работает за $O(E)$.
 #code-with-asymptotics([
 ```cpp
+// Проверка (неориент.): все степени чётны
+for(int v=0;v<n;v++)
+  if(deg[v]%2!=0){ cout<<"No Euler cycle"; return; }
+
+// Хиерхольцер (с cur_edge — указатель текущего ребра)
+vector<int> cur_edge(n, 0);
 stack<int> st; vector<int> ans;
 st.push(start);
 while(!st.empty()){
-  int v=st.top();
-  if(has_edge(v)) { 
-    int to=take_edge(v); 
-    st.push(to); 
-    }
-  else { 
+  int v = st.top();
+  if(cur_edge[v] < (int)g[v].size()){
+    st.push(g[v][cur_edge[v]++]);
+  } else {
     ans.push_back(v);
-    st.pop(); 
-    }
+    st.pop();
+  }
 }
+reverse(ans.begin(), ans.end());
 ```
 ], [Время: $O(E)$.])
 
@@ -291,17 +324,34 @@ bool try_kuhn(int v){
 ```
 ], [Время: $O(V * E)$ в худшем случае.])
 
-= Форда—Фалкерсон и Эдмондс—Карп (макс. поток) - to do псевдокод эдмондса карпса
-Форд—Фалкерсон увеличивает поток, пока в остаточной сети существует путь из истока в сток с положительной пропускной способностью. Эдмондс—Карп конкретизирует этот подход, всегда выбирая кратчайший по числу рёбер увеличивающий путь через BFS, что даёт гарантированную полиномиальную оценку.
+= Форда—Фалкерсон и Эдмондс—Карп (макс. поток)
+Форд—Фалкерсон увеличивает поток, пока в остаточной сети есть путь $s \to t$ с положительной пропускной способностью. Эдмондс—Карп выбирает *кратчайший* путь через BFS, что даёт полиномиальную оценку. Остаточная ёмкость: $r(u,v) = cap(u,v) - f(u,v)$.
 #code-with-asymptotics([
 ```cpp
-while(bfs(s,t,parent)){
-  int add = bottleneck(parent);
-  augment(parent, add);
-  flow += add;
+// BFS augmenting path (Edmonds-Karp)
+bool bfs(int s, int t, vector<int>& par){
+  fill(par.begin(),par.end(),-1); par[s]=s;
+  queue<int> q; q.push(s);
+  while(!q.empty() && par[t]==-1){
+    int v=q.front(); q.pop();
+    for(int to: g[v])
+      if(par[to]==-1 && cap[v][to]-f[v][to]>0){
+        par[to]=v; q.push(to);
+      }
+  }
+  return par[t]!=-1;
+}
+int maxflow=0;
+while(bfs(s,t,par)){
+  int fl=INF;
+  for(int v=t;v!=s;v=par[v])
+    fl=min(fl, cap[par[v]][v]-f[par[v]][v]);
+  for(int v=t;v!=s;v=par[v])
+    { f[par[v]][v]+=fl; f[v][par[v]]-=fl; }
+  maxflow+=fl;
 }
 ```
-], [Время: для Edmonds–Karp $O(V * E^2)$.])
+], [Время: $O(V E^2)$ (Edmonds–Karp).])
 
 = Форда—Фалкерсон для max matching в двудольном
 Максимальное паросочетание в двудольном графе можно свести к задаче максимального потока: добавляют исток, сток и рёбра единичной пропускной способности. После этого любой алгоритм maxflow автоматически находит размер паросочетания как величину максимального потока.
@@ -396,3 +446,239 @@ for (int v = 0; v < n; ++v) {
 }
 ```
 ], [Время: $O(V+E)$])
+
+= Полиномиальный хэш. Алгоритм Рабина—Карпа
+Полиномиальный хэш строки: $h = s_0 \cdot p^0 + s_1 \cdot p^1 + \ldots + s_{n-1} \cdot p^{n-1} \pmod{M}$. Рабин—Карп сдвигает окно за $O(1)$ с помощью *rolling hash*: вычитает первый символ, делит на $p$. При совпадении хэшей проверяет строки посимвольно.
+#code-with-asymptotics([
+```cpp
+const long long BASE=31, MOD=1e9+7;
+// Построение префиксных хэшей
+vector<long long> h(n+1,0), pw(n+1,1);
+for(int i=0;i<n;i++){
+  h[i+1]=(h[i]+(s[i]-'a'+1)*pw[i])%MOD;
+  pw[i+1]=pw[i]*BASE%MOD;
+}
+// Хэш подстроки [l, r)
+auto get=[&](int l,int r){
+  return (h[r]-h[l]+MOD)%MOD;
+};
+// Рабин–Карп: поиск паттерна p в тексте t
+long long hp=get_hash(p);
+for(int i=0;i+m<=n;i++)
+  if(get(i,i+m)==hp && t.substr(i,m)==p)
+    cout<<i<<"\n";
+```
+], [Время: $O(n+m)$ в среднем.])
+
+= Префикс-функция
+$\pi[i]$ — длина наибольшего собственного префикса $s[0..i]$, который одновременно является суффиксом. Используется в КМП и для поиска всех вхождений паттерна.
+#code-with-asymptotics([
+```cpp
+vector<int> prefix(const string& s){
+  int n=s.size();
+  vector<int> pi(n,0);
+  for(int i=1;i<n;i++){
+    int j=pi[i-1];
+    while(j>0 && s[i]!=s[j]) j=pi[j-1];
+    if(s[i]==s[j]) j++;
+    pi[i]=j;
+  }
+  return pi;
+}
+```
+], [Время: $O(n)$.])
+
+= Z-функция
+$z[i]$ — длина наибольшего префикса строки $s$, совпадающего с подстрокой, начинающейся в позиции $i$. Поддерживается Z-box $[l, r)$: если $i < r$, то $z[i] \geq \min(r-i,\ z[i-l])$.
+#code-with-asymptotics([
+```cpp
+vector<int> z_function(const string& s){
+  int n=s.size(); vector<int> z(n,0);
+  z[0]=n; int l=0,r=0;
+  for(int i=1;i<n;i++){
+    if(i<r) z[i]=min(r-i, z[i-l]);
+    while(i+z[i]<n && s[z[i]]==s[i+z[i]]) z[i]++;
+    if(i+z[i]>r){ l=i; r=i+z[i]; }
+  }
+  return z;
+}
+```
+], [Время: $O(n)$.])
+
+= Алгоритм Кнута—Морриса—Пратта (КМП)
+Склейка `p + '#' + t` позволяет найти все вхождения паттерна $p$ в текст $t$ за один проход: если $\pi[i] = |p|$, то найдено вхождение в позиции $i - 2|p|$.
+#code-with-asymptotics([
+```cpp
+void kmp(const string& t, const string& p){
+  string s = p + '#' + t;
+  auto pi = prefix(s);
+  int m = p.size();
+  for(int i=m+1; i<(int)s.size(); i++)
+    if(pi[i]==m)
+      cout << i-2*m << "\n"; // позиция в t
+}
+```
+], [Время: $O(n+m)$.])
+
+= Построение автомата для поиска подстроки
+Конечный автомат — таблица переходов $\delta[\text{state}][\text{char}]$: из состояния $q$ по символу $c$ переходим в наибольшее $k$, такое что $p[0..k-1]$ является суффиксом $p[0..q-1] \cdot c$. Состояние $= |\text{совпавшего префикса}|$. При $\delta[q][c] = |p|$ — вхождение найдено.
+#code-with-asymptotics([
+```cpp
+// Построение автомата (используем префикс-функцию)
+int m=p.size(); const int A=26;
+vector<array<int,A>> aut(m+1);
+aut[0].fill(0);
+aut[0][p[0]-'a']=1;
+for(int q=1;q<=m;q++){
+  for(int c=0;c<A;c++){
+    if(q<m && p[q]-'a'==c) aut[q][c]=q+1;
+    else aut[q][c]=aut[pi[q-1]][c]; // pi — префикс-ф. p
+  }
+}
+// Поиск: state=aut[state][t[i]-'a']
+int state=0;
+for(char ch: t){
+  state=aut[state][ch-'a'];
+  if(state==m) cout<</*pos*/"match\n";
+}
+```
+], [Время построения: $O(m \cdot |\Sigma|)$. Поиска: $O(n)$.])
+
+= Бор (Trie, префиксное дерево)
+Бор хранит множество строк в виде дерева, где каждое ребро помечено символом. Поиск и вставка — $O(|w|)$. Удобен для задач на префиксы и реализации Ахо-Корасика.
+#code-with-asymptotics([
+```cpp
+struct Trie {
+  array<int,26> to;
+  int cnt = 0; // слов оканчивается здесь
+  Trie(){ to.fill(-1); }
+};
+vector<Trie> t(1);
+
+void insert(const string& s){
+  int v=0;
+  for(char c : s){
+    int k=c-'a';
+    if(t[v].to[k]==-1){
+      t[v].to[k]=t.size();
+      t.emplace_back();
+    }
+    v=t[v].to[k];
+  }
+  t[v].cnt++;
+}
+
+bool find(const string& s){
+  int v=0;
+  for(char c : s){
+    int k=c-'a';
+    if(t[v].to[k]==-1) return false;
+    v=t[v].to[k];
+  }
+  return t[v].cnt>0;
+}
+```
+], [Время: $O(|w|)$ на операцию.])
+
+= Алгоритм Ахо—Корасика
+Строит автомат на Боре для поиска *множества* паттернов одновременно. Fail-ссылки (суффиксные ссылки) — аналог КМП-префикс-функции на Боре: из вершины $v$ с меткой $u[0..k]$ ссылка ведёт к вершине с меткой максимального суффикса $u[0..k]$, являющегося префиксом какого-либо паттерна.
+#code-with-asymptotics([
+```cpp
+struct AhoCorasick {
+  vector<array<int,26>> go;
+  vector<int> fail, out; // out — битмаска паттернов
+  AhoCorasick(): go(1), fail(1,0), out(1,0){}
+
+  void add(const string& s, int id){
+    int v=0;
+    for(char c:s){
+      int k=c-'a';
+      if(!go[v][k]){
+        go.push_back({}); fail.push_back(0); out.push_back(0);
+        go[v][k]=go.size()-1;
+      }
+      v=go[v][k];
+    }
+    out[v]|=(1<<id);
+  }
+
+  void build(){
+    queue<int> q;
+    for(int c=0;c<26;c++) if(go[0][c]) q.push(go[0][c]);
+    while(!q.empty()){
+      int v=q.front(); q.pop();
+      out[v]|=out[fail[v]]; // суффиксные вхождения
+      for(int c=0;c<26;c++){
+        if(go[v][c]){
+          fail[go[v][c]]=go[fail[v]][c];
+          q.push(go[v][c]);
+        } else go[v][c]=go[fail[v]][c];
+      }
+    }
+  }
+};
+// Поиск: state=ac.go[state][c-'a']
+```
+], [Время: $O(\sum|p_i| \cdot |\Sigma| + n + z)$.])
+
+= Хэширование: идея, хэш-таблица, коллизии
+Хэш-функция $h: U \to \{0,\ldots,m-1\}$ отображает ключи в индексы таблицы. Идеальная функция — инъекция, реальная — допускает коллизии. Простой пример: $h(k) = k \bmod m$, $m$ — простое. *Коллизия* — $h(k_1)=h(k_2)$ при $k_1 \neq k_2$.
+#asymptotics[Поиск/вставка: $O(1)$ в среднем, $O(n)$ в худшем.]
+
+= Открытая и закрытая адресация
+*Метод цепочек (закрытая):* каждый слот — связный список. *Открытая адресация:* при коллизии ищем следующий свободный слот по правилу пробирования.
+#code-with-asymptotics([
+```cpp
+// Метод цепочек
+vector<list<int>> table(m);
+table[h(key)].push_back(key);
+
+// Линейное пробирование (открытая адресация)
+int i=h(key);
+while(table[i]!=EMPTY) i=(i+1)%m;
+table[i]=key;
+
+// Квадратичное: i = (h(k) + j^2) % m
+// Двойное хэширование: i = (h1(k) + j*h2(k)) % m
+```
+], [Время: $O(1/(1-\alpha))$, где $\alpha = n/m$ — коэффициент загрузки.])
+
+= Метод Кукушки
+Используются две хэш-таблицы $T_1$ и $T_2$ с функциями $h_1$, $h_2$. Вставка: поместить в $T_1[h_1(k)]$; если занято — вытолкнуть старый ключ в $T_2[h_2(\cdot)]$, и так далее. При цикле (> $N$ перемещений) — перехэширование. Гарантированный $O(1)$ поиск.
+#code-with-asymptotics([
+```cpp
+void insert(int key){
+  for(int i=0;i<MAX_IT;i++){
+    if(T1[h1(key)]==EMPTY){ T1[h1(key)]=key; return; }
+    swap(key, T1[h1(key)]);
+    if(T2[h2(key)]==EMPTY){ T2[h2(key)]=key; return; }
+    swap(key, T2[h2(key)]);
+  }
+  rehash(); insert(key); // цикл → перехэширование
+}
+bool find(int key){
+  return T1[h1(key)]==key || T2[h2(key)]==key;
+}
+```
+], [Время: $O(1)$ поиск/удаление; вставка $O(1)$ амортизированно.])
+
+= Фильтр Блума
+Вероятностная структура данных для проверки принадлежности к множеству. Битовый массив размером $m$, $k$ хэш-функций. *Ложноположительный* ответ возможен, *ложноотрицательный* — нет. Вероятность ложного срабатывания: $\approx (1 - e^{-kn/m})^k$.
+#code-with-asymptotics([
+```cpp
+bitset<M> bloom;
+
+void add(const string& s){
+  for(int i=0;i<k;i++)
+    bloom.set(hash_i(s,i)%M);
+}
+
+bool query(const string& s){
+  for(int i=0;i<k;i++)
+    if(!bloom.test(hash_i(s,i)%M))
+      return false; // точно нет
+  return true; // возможно есть
+}
+// Удаление невозможно (только counting Bloom filter)
+```
+], [Память: $O(m)$ бит; вставка/запрос: $O(k)$.])

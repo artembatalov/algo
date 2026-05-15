@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Алгоритмы & СД — Визуализации</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0c12;
+      --surface: #12151f;
+      --surface2: #1a1d2a;
+      --border: #252840;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --accent: #6366f1;
+      --accent2: #818cf8;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+    /* ── Hero ── */
+    .hero {
+      padding: 48px 40px 36px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #0f1117 0%, #1a1635 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(99,102,241,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,.15);
+      border: 1px solid rgba(99,102,241,.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .hero h1 span { color: var(--accent2); }
+    .hero p { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 520px; }
+
+    /* ── Progress ── */
+    .progress-wrap {
+      max-width: 900px; margin: 0 auto;
+      padding: 20px 40px 0;
+    }
+    .progress-bar-outer {
+      background: var(--surface2);
+      border-radius: 8px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      transition: width .5s ease;
+    }
+    .progress-label { font-size: 12px; color: var(--muted); }
+    .progress-label b { color: var(--accent2); }
+
+    /* ── Category filters ── */
+    .filters {
+      max-width: 900px; margin: 0 auto;
+      padding: 20px 40px 0;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px; font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ── Grid ── */
+    .grid {
+      max-width: 900px; margin: 24px auto 0;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color .15s, transform .15s, box-shadow .15s;
+      display: flex; flex-direction: column; gap: 10px;
+      text-decoration: none; color: inherit;
+      position: relative;
+      cursor: pointer;
+    }
+    .card:not(.card-locked):hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99,102,241,.15);
+    }
+    .card.card-locked { opacity: .5; cursor: default; }
+
+    .card-head { display: flex; align-items: flex-start; gap: 10px; }
+    .card-num {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .card:not(.card-locked) .card-num { border-color: var(--accent); color: var(--accent2); background: rgba(99,102,241,.1); }
+
+    .card-title { font-size: 13px; font-weight: 600; line-height: 1.35; }
+
+    .card-foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+    .cat-badge {
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 10.5px; font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .cat-traversal { background: rgba(99,102,241,.12); border-color: rgba(99,102,241,.35); color: #a5b4fc; }
+    .cat-shortpath { background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.35); color: #6ee7b7; }
+    .cat-flow      { background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.35); color: #fcd34d; }
+    .cat-string    { background: rgba(244,63,94,.12);  border-color: rgba(244,63,94,.35);  color: #fda4af; }
+    .cat-hash      { background: rgba(139,92,246,.12); border-color: rgba(139,92,246,.35); color: #c4b5fd; }
+
+    .cplx-badge {
+      margin-left: auto;
+      font-size: 10.5px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+    }
+
+    .card-lock-icon {
+      position: absolute; top: 12px; right: 12px;
+      font-size: 14px; color: var(--border);
+    }
+    .card-done-icon {
+      position: absolute; top: 10px; right: 10px;
+      width: 20px; height: 20px;
+      background: rgba(16,185,129,.2);
+      border: 1px solid rgba(16,185,129,.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #6ee7b7;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #252840; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">✦ ITMO IS · 2 семестр</div>
+    <h1>Алгоритмы &amp;<br><span>Структуры данных</span></h1>
+    <p>31 интерактивная визуализация для подготовки к коллоквиуму. Каждая страница — пошаговая анимация с псевдокодом и редактируемым графом.</p>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="prog-bar" style="width:0%"></div>
+  </div>
+  <div class="progress-label">Готово: <b id="prog-count">0</b> из 31</div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-cat="all">Все</button>
+  <button class="filter-btn" data-cat="traversal">Обходы графов</button>
+  <button class="filter-btn" data-cat="shortpath">Кратчайшие пути</button>
+  <button class="filter-btn" data-cat="flow">Потоки &amp; паросоч.</button>
+  <button class="filter-btn" data-cat="string">Строки</button>
+  <button class="filter-btn" data-cat="hash">Хэширование</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<footer>Коллоквиум — удачи!</footer>
+
+<script>
+const ALGOS = [
+  // Traversal
+  { n:1,  title:'Обход в глубину (DFS)',               cat:'traversal', t:'O(V+E)',    href:'01-dfs/' },
+  { n:2,  title:'Обход в ширину (BFS)',                cat:'traversal', t:'O(V+E)',    href:'02-bfs/' },
+  { n:3,  title:'Топологическая сортировка',           cat:'traversal', t:'O(V+E)',    href:'03-topo/' },
+  { n:4,  title:'Конденсация графа',                   cat:'traversal', t:'O(V+E)',    href:'04-condensation/' },
+  { n:5,  title:'Поиск и восстановление циклов',       cat:'traversal', t:'O(V+E)',    href:'05-cycles/' },
+  { n:6,  title:'Гамильтонов цикл',                    cat:'traversal', t:'O(V²)',     href:'06-hamilton/' },
+  { n:7,  title:'Эйлеров цикл (Хиерхольцер)',         cat:'traversal', t:'O(E)',      href:'07-euler/' },
+  { n:8,  title:'Компоненты связности',                cat:'traversal', t:'O(V+E)',    href:'08-components/' },
+  // Shortest paths
+  { n:9,  title:'Алгоритм Краскала',                   cat:'shortpath', t:'O(E log E)',href:'09-kruskal/' },
+  { n:10, title:'Алгоритм Прима',                      cat:'shortpath', t:'O(E log V)',href:'10-prim/' },
+  { n:11, title:'Алгоритм Беллмана–Форда',             cat:'shortpath', t:'O(VE)',     href:'11-bellman/' },
+  { n:12, title:'Кратчайшие пути в DAG',               cat:'shortpath', t:'O(V+E)',    href:'12-dag/' },
+  { n:13, title:'Алгоритм Дейкстры',                   cat:'shortpath', t:'O((V+E)logV)',href:'13-dijkstra/' },
+  { n:14, title:'Алгоритм Флойда–Уоршалла',            cat:'shortpath', t:'O(V³)',     href:'14-floyd/' },
+  { n:15, title:'Диаметр дерева',                      cat:'shortpath', t:'O(V)',      href:'15-diameter/' },
+  // Flow & matching
+  { n:16, title:'Алгоритм Куна (паросочетание)',       cat:'flow',      t:'O(VE)',     href:'16-kuhn/' },
+  { n:17, title:'Форд–Фалкерсон / Эдмондс–Карп',     cat:'flow',      t:'O(VE²)',    href:'17-maxflow/' },
+  { n:18, title:'Форд–Фалкерсон для паросочетания',   cat:'flow',      t:'O(VE)',     href:'18-ff-bipartite/' },
+  { n:19, title:'Мосты и точки сочленения',            cat:'flow',      t:'O(V+E)',    href:'19-bridges/' },
+  { n:20, title:'Жадная раскраска графа',              cat:'flow',      t:'O(V+E)',    href:'20-coloring/' },
+  // Strings
+  { n:21, title:'Хэш Рабина–Карпа',                   cat:'string',    t:'O(n+m)',    href:'21-rabin-karp/' },
+  { n:22, title:'Префикс-функция',                     cat:'string',    t:'O(n)',      href:'22-prefix/' },
+  { n:23, title:'Z-функция',                           cat:'string',    t:'O(n)',      href:'23-z-func/' },
+  { n:24, title:'Алгоритм КМП',                        cat:'string',    t:'O(n+m)',    href:'24-kmp/' },
+  { n:25, title:'Автомат для поиска подстроки',        cat:'string',    t:'O(n·|Σ|)', href:'25-automaton/' },
+  { n:26, title:'Бор (Trie)',                          cat:'string',    t:'O(n·|w|)', href:'26-trie/' },
+  { n:31, title:'Алгоритм Ахо–Корасик',               cat:'string',    t:'O(n+m+z)', href:'31-aho-corasick/' },
+  // Hash
+  { n:27, title:'Хэш-таблица: идея и коллизии',       cat:'hash',      t:'O(1) avg',  href:'27-hashing/' },
+  { n:28, title:'Открытая и закрытая адресация',       cat:'hash',      t:'O(1) avg',  href:'28-addressing/' },
+  { n:29, title:'Метод Кукушки',                       cat:'hash',      t:'O(1) avg',  href:'29-cuckoo/' },
+  { n:30, title:'Фильтр Блума',                        cat:'hash',      t:'O(k)',      href:'30-bloom/' },
+];
+
+const CAT_LABELS = {
+  traversal:'Обход', shortpath:'Кратчайшие пути', flow:'Поток/Паросоч.', string:'Строки', hash:'Хэш',
+};
+
+let activeCat = 'all';
+
+function checkDone(href) {
+  // assume done if navigating works — we check by trying a HEAD request
+  return fetch(href, {method:'HEAD'}).then(r=>r.ok).catch(()=>false);
+}
+
+async function buildGrid() {
+  const grid = document.getElementById('grid');
+  const doneSet = new Set();
+
+  // Check all in parallel
+  const checks = await Promise.all(ALGOS.map(a => fetch(a.href,{method:'HEAD'}).then(r=>r.ok).catch(()=>false)));
+  checks.forEach((ok,i)=>{ if(ok) doneSet.add(ALGOS[i].n); });
+
+  const doneCount = doneSet.size;
+  document.getElementById('prog-count').textContent = doneCount;
+  document.getElementById('prog-bar').style.width = (doneCount/31*100)+'%';
+
+  function render() {
+    grid.innerHTML = '';
+    ALGOS.filter(a => activeCat==='all' || a.cat===activeCat).forEach(a => {
+      const done = doneSet.has(a.n);
+      const el = document.createElement(done ? 'a' : 'div');
+      if (done) { el.href = a.href; }
+      el.className = 'card' + (done ? '' : ' card-locked');
+      el.dataset.cat = a.cat;
+      el.innerHTML = `
+        <div class="card-head">
+          <div class="card-num">${a.n}</div>
+          <div class="card-title">${a.title}</div>
+        </div>
+        <div class="card-foot">
+          <span class="cat-badge cat-${a.cat}">${CAT_LABELS[a.cat]}</span>
+          <span class="cplx-badge">${a.t}</span>
+        </div>
+        ${done ? '<div class="card-done-icon">✓</div>' : '<div class="card-lock-icon">🔒</div>'}
+      `;
+      grid.appendChild(el);
+    });
+  }
+
+  render();
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      render();
+    });
+  });
+}
+
+buildGrid();
+</script>
+</body>
+</html>
