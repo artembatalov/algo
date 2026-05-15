@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>30 — Фильтр Блума</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>30 — <span>Фильтр Блума</span></h1>
+  <div class="complexity">
+    <span class="badge">Вставка/Запрос: <b>O(k)</b></span>
+    <span class="badge">Память: <b>O(m)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="str-canvas"></div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Состояние</h3>
+      <div class="state-row"><span class="state-key">Операция</span><div class="chips"><span class="chip c-accent" id="cur-op">—</span></div></div>
+      <div class="state-row"><span class="state-key">Хэши</span><div class="chips" id="chips-hashes"></div></div>
+      <div class="state-row"><span class="state-key">Результат</span><div class="chips"><span class="chip c-black" id="result-chip">—</span></div></div>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="bit bit-1">1</span> Установлен бит</div>
+        <div class="legend-item"><span class="bit bit-active">?</span> Проверяемый</div>
+        <div class="legend-item"><span class="bit bit-found">✓</span> Все биты=1</div>
+        <div class="legend-item"><span class="bit bit-fp">!</span> Ложноположительный</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

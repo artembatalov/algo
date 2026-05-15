@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>25 — Конечный автомат (поиск строки)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>25 — <span>Конечный автомат для поиска паттерна</span></h1>
+  <div class="complexity">
+    <span class="badge">Время: <b>O(n·|Σ| + n_text)</b></span>
+    <span class="badge">Память: <b>O(m·|Σ|)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="str-canvas"></div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Состояние</h3>
+      <div class="state-row"><span class="state-key">Состояние</span><div class="chips"><span class="chip c-accent" id="cur-state">0</span></div></div>
+      <div class="state-row"><span class="state-key">Символ</span><div class="chips"><span class="chip c-gray" id="cur-char">—</span></div></div>
+      <div class="state-row"><span class="state-key">Найдено</span><div class="chips" id="chips-found"></div></div>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span style="background:rgba(99,102,241,.2);border:1px solid var(--accent2);border-radius:4px;padding:1px 5px;font-size:10px">cb-active</span> Текущий символ</div>
+        <div class="legend-item"><span style="background:rgba(16,185,129,.12);border-radius:4px;padding:1px 5px;font-size:10px">cb-done</span> Совпадение</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

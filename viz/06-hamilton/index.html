@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>06 — Гамильтонов цикл</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>06 — <span>Гамильтонов цикл</span></h1>
+  <div class="complexity">
+    <span class="badge">Время: <b>O(n!)</b></span>
+    <span class="badge">Память: <b>O(n)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="canvas-wrap">
+      <svg id="viz-svg"></svg>
+      <div class="canvas-hint">Клик — вершина · Клик→клик — ребро · ПКМ — удалить · Тащи — перемещать</div>
+    </div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Состояние</h3>
+      <div class="state-row"><span class="state-key">Путь</span><div class="chips" id="chips-path"></div></div>
+      <div class="state-row"><span class="state-key">Степени</span></div>
+      <table class="viz-table">
+        <thead><tr><th>Верш.</th><th>deg</th><th>≥ n/2?</th></tr></thead>
+        <tbody id="deg-tbody"></tbody>
+      </table>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-gray)"></span> В пути</div>
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-black)"></span> Завершён</div>
+        <div class="legend-item"><span class="leg-line" style="background:var(--edge-tree)"></span> Путь</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

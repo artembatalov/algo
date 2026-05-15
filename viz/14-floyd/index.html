@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>14 — Флойд-Уоршелл</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>14 — <span>Флойд-Уоршелл: все пары</span></h1>
+  <div class="complexity">
+    <span class="badge">Время: <b>O(V³)</b></span>
+    <span class="badge">Память: <b>O(V²)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="canvas-wrap">
+      <svg id="viz-svg"></svg>
+      <div class="canvas-hint">Клик — вершина · Клик→клик — ребро (вес задаётся при добавлении) · ПКМ — удалить</div>
+    </div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Матрица расстояний</h3>
+      <div id="matrix-container"></div>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-gray)"></span> Промежут. вершина k</div>
+        <div class="legend-item" style="gap:4px"><span style="background:rgba(99,102,241,.3);width:12px;height:12px;display:inline-block;border-radius:2px"></span> Рассматриваемая ячейка</div>
+        <div class="legend-item" style="gap:4px"><span style="background:rgba(16,185,129,.3);width:12px;height:12px;display:inline-block;border-radius:2px"></span> Обновлена</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

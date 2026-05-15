@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>27 — Хеш-таблицы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>27 — <span>Хеш-таблицы (метод цепочек)</span></h1>
+  <div class="complexity">
+    <span class="badge">Поиск: <b>O(1)</b> ср.</span>
+    <span class="badge">Память: <b>O(n)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="str-canvas"></div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Состояние</h3>
+      <div class="state-row"><span class="state-key">Ключ</span><div class="chips"><span class="chip c-accent" id="cur-key">—</span></div></div>
+      <div class="state-row"><span class="state-key">h(k)=k%m</span><div class="chips"><span class="chip c-gray" id="cur-hash">—</span></div></div>
+      <div class="state-row"><span class="state-key">Нагрузка</span><div class="chips"><span class="chip c-black" id="load-factor">0</span></div></div>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="ht-slot" style="width:40px;height:20px;font-size:10px;background:rgba(99,102,241,.15);border:1px solid var(--accent)">key</span> Занят</div>
+        <div class="legend-item"><span class="ht-slot" style="width:40px;height:20px;font-size:10px;background:rgba(245,158,11,.2);border:1px solid var(--col-gray)">→</span> Активный</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>

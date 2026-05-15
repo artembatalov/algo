@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>15 — Диаметр дерева</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/base.css">
+</head>
+<body>
+<header>
+  <a href="../" class="back-link">← Все алгоритмы</a>
+  <h1>15 — <span>Диаметр дерева (двойной BFS)</span></h1>
+  <div class="complexity">
+    <span class="badge">Время: <b>O(V)</b></span>
+    <span class="badge">Память: <b>O(V)</b></span>
+  </div>
+</header>
+<main>
+  <div id="left-panel">
+    <div id="controls"></div>
+    <div id="canvas-wrap">
+      <svg id="viz-svg"></svg>
+      <div class="canvas-hint">Клик — вершина · Клик→клик — ребро · ПКМ — удалить · Тащи — перемещать</div>
+    </div>
+  </div>
+  <div id="right-panel">
+    <div id="pseudo"><h3>Псевдокод</h3></div>
+    <div id="state-panel">
+      <h3>Состояние</h3>
+      <div class="state-row"><span class="state-key">BFS</span><div class="chips" id="chips-phase"></div></div>
+      <div class="state-row"><span class="state-key">A (дальний)</span><div class="chips" id="chips-a"></div></div>
+      <div class="state-row"><span class="state-key">B (дальний)</span><div class="chips" id="chips-b"></div></div>
+      <div class="state-row"><span class="state-key">Диаметр</span><div class="chips"><span class="chip c-accent" id="diam-val">?</span></div></div>
+    </div>
+    <div id="step-desc">Нажмите <b>Запустить</b>.</div>
+    <div id="legend">
+      <h3>Легенда</h3>
+      <div class="legend-grid">
+        <div class="legend-item"><span class="leg-dot" style="background:#3b82f6"></span> В очереди</div>
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-black)"></span> Обработана</div>
+        <div class="legend-item"><span class="leg-dot" style="background:var(--col-gray)"></span> Конец диаметра</div>
+        <div class="legend-item"><span class="leg-line" style="background:#ef4444"></span> Диаметр</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="algo.js"></script>
+</body>
+</html>
